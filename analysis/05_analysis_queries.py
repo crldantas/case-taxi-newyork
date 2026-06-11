@@ -34,10 +34,16 @@
 # COMMAND ----------
 
 # MAGIC %sql
+# MAGIC
 # MAGIC SELECT
-# MAGIC     HOUR(tpep_pickup_datetime)         AS hour,
-# MAGIC     ROUND(AVG(passenger_count), 4)     AS avg_passenger_count
+# MAGIC     HOUR(tpep_pickup_datetime) AS hora_do_dia,
+# MAGIC     ROUND(
+# MAGIC         SUM(passenger_count) * 1.0 / COUNT(DISTINCT DATE(tpep_pickup_datetime)),
+# MAGIC         2
+# MAGIC     ) AS media_passageiros_por_hora
 # MAGIC FROM serving.yellow_tripdata_ny
-# MAGIC WHERE MONTH(tpep_pickup_datetime) = 5
+# MAGIC WHERE YEAR(tpep_pickup_datetime) = 2023
+# MAGIC   AND MONTH(tpep_pickup_datetime) = 5
 # MAGIC GROUP BY HOUR(tpep_pickup_datetime)
-# MAGIC ORDER BY hour
+# MAGIC ORDER BY hora_do_dia;
+# MAGIC
